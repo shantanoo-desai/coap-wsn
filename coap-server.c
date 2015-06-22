@@ -409,7 +409,7 @@ PROCESS_THREAD(do_post, ev, data)
 	PROCESS_BEGIN();
 	static coap_packet_t request[1]; /* This way the packet can be treated as pointer as usual. from coap-client example */
 	
-	coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0); // non-confirmable message
+	coap_init_message(request, COAP_TYPE_NON, COAP_POST, 0); // non-confirmable message
 	coap_set_header_uri_path(request, sensor_cfg.sink_path);
 	coap_set_payload(request, buf, strlen(buf)); // main buffer declared at first
 
