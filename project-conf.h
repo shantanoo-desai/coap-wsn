@@ -41,8 +41,8 @@
 
 /* Custom channel and PAN ID configuration for your project. */
 
-   #undef RF_CHANNEL
-   #define RF_CHANNEL                     26
+   #undef RF_CONF_CHANNEL
+   #define RF_CONF_CHANNEL                     26
 
    #undef IEEE802154_CONF_PANID
    #define IEEE802154_CONF_PANID          0xABCD
@@ -52,22 +52,17 @@
    #undef UIP_CONF_BUFFER_SIZE
    #define UIP_CONF_BUFFER_SIZE           256
 
-/* rdc channel check rate : 16 Hz*/
+/* rdc channel check rate : 16 Hz	
 #undef NETSTACK_CONF_RDC_CHANNEL_CHECK_RATE
-#define NETSTACK_CONF_RDC_CHANNEL_CHECK_RATE 	16
+#define NETSTACK_CONF_RDC_CHANNEL_CHECK_RATE 	16 */
 
 
-/* Disabling RDC and CSMA for demo purposes. Core updates often
-   require more memory. */
 /* For projects, optimize memory and enable RDC and CSMA again. */
 #undef NETSTACK_CONF_RDC
-#define NETSTACK_CONF_RDC              nullmac_driver
+#define NETSTACK_CONF_RDC              contikimac_driver
 
 /* Disabling TCP on CoAP nodes. */
 #undef UIP_CONF_TCP
 #define UIP_CONF_TCP                   0
-
-#undef NETSTACK_CONF_MAC
-#define NETSTACK_CONF_MAC     nullmac_driver
 
 #endif
