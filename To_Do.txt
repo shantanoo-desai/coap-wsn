@@ -1,0 +1,7 @@
+change configuration files for 
+
+SLIP RADIO -->> MAC --- nullmac_driver , nullrdc_driver
+COAP SERVER -->> MAC --- csma_drive, nullrdc_driver
+
+For pluged in mode
+
