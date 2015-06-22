@@ -6,6 +6,7 @@
 
 #include "net/rpl/rpl.h"
 #include "dev/radio.h"
+#include "lpm.h" // Low Power Module
 
 #if PLATFORM_HAS_BUTTON
 #include "dev/button-sensor.h"
@@ -55,8 +56,8 @@ AUTOSTART_PROCESSES(&coap_server);
 static uint8_t con_ok;
 
 /*counters*/
-static int post_count;
-static int uptime_count;
+static int post_count; // counts the total posts made
+static int uptime_count; // counts how long has been the mote UP
 
 static rpl_dag_t *dag; // DAG 
 
@@ -409,7 +410,7 @@ PROCESS_THREAD(do_post, ev, data)
 	PROCESS_BEGIN();
 	static coap_packet_t request[1]; /* This way the packet can be treated as pointer as usual. from coap-client example */
 	
-	coap_init_message(request, COAP_TYPE_NON, COAP_POST, 0); // non-confirmable message
+	coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0); // confirmable message
 	coap_set_header_uri_path(request, sensor_cfg.sink_path);
 	coap_set_payload(request, buf, strlen(buf)); // main buffer declared at first
 
