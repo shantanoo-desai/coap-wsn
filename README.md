@@ -5,7 +5,7 @@ Based on Project by Kiril Petrov (https://github.com/retfie)
 
 Available resources:
 
-<pre><b>CONFIG Parameters</b> : GET, PUT</pre>
+<pre><b>CONFIG Parameters</b> : GET, POST</pre>
 Configuring the IP sink address, Posting interval and Sink Path
 
 <pre><b>GET config?param=ip</b></pre>
@@ -40,4 +40,13 @@ will return the LQI and RSSI values according to the query index <b>p</b>
 eg:
 <pre> GET radio?p=lqi </pre> should return some value of LQI
 <pre> GET radio?p=rssi</pre> should return some values of RSSI
+
+
+To Access CoAP Server Resources:
+
+Use of SMCP which has command line interface.
+
+(Note: there seems to be some Problem at present when using the Copper Plugin in Mozilla Firefox)
+
+for further info on SMCP : https://github.com/darconeous/smcp/
 
