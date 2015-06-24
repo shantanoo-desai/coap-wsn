@@ -252,7 +252,7 @@ config_post_handler(void *request, void *response, uint8_t *buffer, uint16_t pre
 	/*manipulating the request payload for POST resource*/
 
 	REST.get_request_payload(request, &new);
-	if (strncmp(pstr, "interval", len) == 0)
+	if (strncmp(pstr, "path", len) == 0)
 	{
 		strncpy(param, (const char *)new, SINK_MAXLEN);
 	}else if (strncmp(pstr, "ip", len) == 0)
