@@ -36,17 +36,17 @@ Similar to Parents info method use <pre>GET rplinfo/route?index=0 or 1 </pre> to
 if the Node is within the Border Router range it will return the Address of the BORDER ROUTER.
 
 <pre><b>RADIO</b> : GET</pre>
-will return the LQI and RSSI values according to the query index <b>p</b>
+will return the LQI and RSSI values according to the query index <b>param</b>
 eg:
-<pre> GET radio?p=lqi </pre> should return some value of LQI
-<pre> GET radio?p=rssi</pre> should return some values of RSSI
+<pre> GET radio?param=lqi </pre> should return some value of LQI
+<pre> GET radio?param=rssi</pre> should return some values of RSSI
 
 
 To Access CoAP Server Resources:
 
 Use of SMCP which has command line interface.
 
-(Note: there seems to be some Problem at present when using the Copper Plugin in Mozilla Firefox)
+(Note: there seems to be some Problem at present when using the Copper Plugin in Mozilla Firefox).
 
 for further info on SMCP : https://github.com/darconeous/smcp/
 
@@ -81,7 +81,11 @@ the important lines to establish with the Raspberry Pi 6LBR are following
 </pre>
 
 to check connectivity ping the 6LBR
-<pre> ping6 bbbb::101</pre>
+<pre> ping6 bbbb::100</pre> 
+also use a Web Browser to access the Border Router's webpage.
+<pre>
+		http://[bbbb::100]
+</pre>
 
 Capture check: 
 Use the most current Wireshark Version 1.12.3 (v1.12.3-0-gbb3e9a0 from master-1.12)
