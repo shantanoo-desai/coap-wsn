@@ -85,4 +85,59 @@ to check connectivity ping the 6LBR
 
 Capture check: 
 Use the most current Wireshark Version 1.12.3 (v1.12.3-0-gbb3e9a0 from master-1.12)
-and capture packets on eth0 and observe the CoAP packets
+and capture packets on eth0 and observe the CoAP packets.
+
+OUTPUT USING SMCPCTL in Ubuntu Terminal:
+<pre>
+~$ smcpctl coap://[aaaa::c30c:0:0:7b]:5683/
+Listening on port 61616.
+coap://[aaaa::c30c:0:0:7b]:5683/> get .well-known/core
+</.well-known/core>;ct=40,</config>;title="Config Parameters"; rt= "Data",</battig>;title="Config Parameters"; rt= "Data",</battery>;title="Battery status";rt="Battery",</radio>;title="RADIO: ?param=lqi|rssi";rt="RadioSensor",</rplinfo/parents>;title="PARENT INFO"; rt = "Data",</rplinfo/routes>;title="RPL ROUTE INFO"; rt="Data"
+coap://[aaaa::c30c:0:0:7b]:5683/> get config?param=interval
+60
+coap://[aaaa::c30c:0:0:7b]:5683/> get config?param=ip
+bbbb::101
+coap://[aaaa::c30c:0:0:7b]:5683/> get config?param=path
+/SINK
+coap://[aaaa::c30c:0:0:7b]:5683/> get battery
+1993 mV
+coap://[aaaa::c30c:0:0:7b]:5683/> get radio?param=lqi
+-84
+coap://[aaaa::c30c:0:0:7b]:5683/> get radio?param=rssi
+101
+coap://[aaaa::c30c:0:0:7b]:5683/> get rplinfo/parent
+get: Result code = 132 (NOT_FOUND)
+coap://[aaaa::c30c:0:0:7b]:5683/> get rplinfo/parents
+1
+coap://[aaaa::c30c:0:0:7b]:5683/> get rplinfo/parents?index=0
+{"eui":"c30c0000000010b7","pref":true,"etx":256}
+coap://[aaaa::c30c:0:0:7b]:5683/> 
+
+</pre>
+
+Using SMCP a simple coap-server is made on the linux pc which listens to the CoAP port of 5683 and responds to the incoming COAP_POST from the CoAP server on Zolertia Z1 and responds with an ACK to the node back and the con_ok in the node is set to 1 which assures the posting message was received by the SINK
+.
+
+the output is shown below:
+<pre>
+	Listening on port 5683
+{"eui":"c10c00000000007b","temp":"25471 mC","count":1}
+{"eui":"c10c00000000007b","temp":"25471 mC","count":2}
+{"eui":"c10c00000000007b","temp":"25471 mC","count":3}
+{"eui":"c10c00000000007b","temp":"25471 mC","count":4}
+{"eui":"c10c00000000007b","temp":"25471 mC","count":5}
+{"eui":"c10c00000000007b","temp":"25471 mC","count":6}
+{"eui":"c10c00000000007b","temp":"25471 mC","count":7}
+{"eui":"c10c00000000007b","temp":"25471 mC","count":8}
+{"eui":"c10c00000000007b","temp":"25471 mC","count":9}
+{"eui":"c10c00000000007b","temp":"25471 mC","count":10}
+{"eui":"c10c00000000007b","temp":"25471 mC","count":11}
+{"eui":"c10c00000000007b","temp":"25471 mC","count":12}
+{"eui":"c10c00000000007b","temp":"25471 mC","count":13}
+{"eui":"c10c00000000007b","temp":"25471 mC","count":14}
+{"eui":"c10c00000000007b","temp":"25471 mC","count":15}
+{"eui":"c10c00000000007b","temp":"25471 mC","count":16}
+{"eui":"c10c00000000007b","temp":"25471 mC","count":17}
+{"eui":"c10c00000000007b","temp":"25471 mC","count":18}
+
+</pre>
