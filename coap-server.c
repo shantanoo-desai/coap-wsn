@@ -6,7 +6,6 @@
 
 #include "net/rpl/rpl.h"
 #include "dev/radio.h"
-#include "lpm.h" // Low Power Module
 
 #if PLATFORM_HAS_BUTTON
 #include "dev/button-sensor.h"
@@ -41,10 +40,11 @@
 
 /*default path to post */
 #define DEFAULT_SINK_PATH "/SINK"
-/*default time to wait between posts*/
+
+/*default time to wait between posts in Seconds*/
 #define DEFAULT_POST_INTERVAL 10
 
-#define REMOTE_PORT		UIP_HTONS(COAP_DEFAULT_PORT)
+#define REMOTE_PORT		UIP_HTONS(COAP_DEFAULT_PORT) /*CoAP default port number 5683*/
 
 extern void rplinfo_activate_resources(void); // RPL parents and paths
 
@@ -304,12 +304,12 @@ battery_get_handler(void *request, void *response, uint8_t *buffer, uint16_t pre
 
   if(accept == -1 || accept == REST.type.TEXT_PLAIN) {
     REST.set_header_content_type(response, REST.type.TEXT_PLAIN);
-    snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "%d", battery);
+    snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "%d mV", battery);
 
     REST.set_response_payload(response, (uint8_t *)buffer, strlen((char *)buffer));
   } else if(accept == REST.type.APPLICATION_JSON) {
     REST.set_header_content_type(response, REST.type.APPLICATION_JSON);
-    snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "{'battery':%d}", battery);
+    snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "{'battery':%d mV}", battery);
 
     REST.set_response_payload(response, buffer, strlen((char *)buffer));
   } else {
@@ -328,7 +328,7 @@ static void radio_get_handler(void *request, void *response, uint8_t *buffer, ui
 
 /* A simple getter example. Returns the reading of the rssi/lqi from radio sensor */
 RESOURCE(res_radio,
-         "title=\"RADIO: ?p=lqi|rssi\";rt=\"RadioSensor\"",
+         "title=\"RADIO: ?param=lqi|rssi\";rt=\"RadioSensor\"",
          radio_get_handler,
          NULL,
          NULL,
@@ -345,7 +345,7 @@ radio_get_handler(void *request, void *response, uint8_t *buffer, uint16_t prefe
   unsigned int accept = -1;
   REST.get_header_accept(request, &accept);
 
-  if((len = REST.get_query_variable(request, "p", &p))) {
+  if((len = REST.get_query_variable(request, "param", &p))) {
     if(strncmp(p, "lqi", len) == 0) {
       param = RADIO_SENSOR_LAST_VALUE;
     } else if(strncmp(p, "rssi", len) == 0) {
@@ -383,6 +383,9 @@ radio_get_handler(void *request, void *response, uint8_t *buffer, uint16_t prefe
 
 
 /* This function is will be passed to COAP_BLOCKING_REQUEST() to handle responses. 
+	when the sink PC receives data, it also sends an Acknowledgment back the Server, 
+	If ACK received the change the con_ok=1
+
 	from the er-example-client.c
 */
 void
@@ -410,7 +413,7 @@ PROCESS_THREAD(do_post, ev, data)
 	PROCESS_BEGIN();
 	static coap_packet_t request[1]; /* This way the packet can be treated as pointer as usual. from coap-client example */
 	
-	coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0); // confirmable message
+	coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0); // confirmable message usin COAP_POST
 	coap_set_header_uri_path(request, sensor_cfg.sink_path);
 	coap_set_payload(request, buf, strlen(buf)); // main buffer declared at first
 
@@ -482,8 +485,8 @@ PROCESS_THREAD(read_sensors,ev,data)
 		     addr->u8[5],
 		     addr->u8[6],
 		     addr->u8[7]);
-	n += sprintf(&(buf[n]), ",\"temp\":\" %d mC\"", 25000 + ((value >> 4)-1422) * 1000 / 42); // will give xxxx mC for temp
-	n += sprintf(&(buf[n]),",\"count\": %d", uptime_count);
+	n += sprintf(&(buf[n]), ",\"temp\":\"%d mC\"", 25000 + ((value >> 4)-1422) * 1000 / 42); // will give xxxx mC for temp
+	n += sprintf(&(buf[n]),",\"count\":%d", uptime_count);
 
 #if WITH_TMP102_SENSOR
 	value = se95_sensor.value(0);
