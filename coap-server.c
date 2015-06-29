@@ -502,8 +502,8 @@ PROCESS_THREAD(read_sensors,ev,data)
 	n += m;
 #endif
 
-	if (NETSTACK_RADIO.get_value(RADIO_PARAM_RSSI, &radio_value) == RADIO_RESULT_OK)
-		n += sprintf(&(buf[n]), "\"rssi\":\"%d dBm\"", radio_value);
+	//if (NETSTACK_RADIO.get_value(RADIO_PARAM_RSSI, &radio_value) == RADIO_RESULT_OK)
+	//	n += sprintf(&(buf[n]), "\"rssi\":\"%d dBm\"", radio_value);
 
 	n += sprintf(&(buf[n]), "}");
 
