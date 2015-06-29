@@ -50,3 +50,37 @@ Use of SMCP which has command line interface.
 
 for further info on SMCP : https://github.com/darconeous/smcp/
 
+The CoAP server keeps posting the following :
+<pre>{eui:aabbccddeeff, tmp=xxxx mC, count=yy, rssi =-abc dBm}</pre>
+according to the 'interval' query in CONFIG parameter. 
+
+By default the time interval is 10 seconds but that could be changed using the following line:
+
+~$ smcpctl coap://[Sensor IPv6 address]:5683/config?param=interval 3600 
+
+the above will configure the server to post the data every one hour (60 * 60  = 3600 seconds)
+ 
+The Sink address is : **bbbb::101** is a Linux PC (Ubuntu) connected to the Sensor Network via the 6LBR border router solution by CETIC.
+
+for further information (https://github.com/cetic/6lbr/wiki)
+
+The sink is hence connected to the linux pc using a ethernet cable to a Raspberry Pi which runs the 6LBR on it and a Zolertia Z1 mote works as a SLIP-Radio which sniffs packets from the sensor network and then passes them to the Raspberry Pi
+
+NOTE: Raspberry pi runs on the ROUTER mode and check if the SLIP radio is connected on the ttyUSB0 port **on the Raspberry Pi not on the Linux PC**
+<pre>ls -l /dev/ttyUSB*</pre>
+
+the important lines to establish with the Raspberry Pi 6LBR are following
+
+<pre>sudo sysctl -w net.ipv6.conf.eth0.accept_ra=1
+	sudo sysctl -w net.ipv6.conf.eth0.accept_ra_rt_info_max_plen=64
+
+	sudo ip -6 addr add bbbb::101/64 dev eth0
+	sudo route -A inet6 add aaaa::/64 gw bbbb::100
+</pre>
+
+to check connectivity ping the 6LBR
+<pre> ping6 bbbb::101</pre>
+
+Capture check: 
+Use the most current Wireshark Version 1.12.3 (v1.12.3-0-gbb3e9a0 from master-1.12)
+and capture packets on eth0 and observe the CoAP packets
