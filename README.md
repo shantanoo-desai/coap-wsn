@@ -60,15 +60,15 @@ By default the time interval is 10 seconds but that could be changed using the f
 <pre>~$ smcpctl coap://[Sensor IPv6 address]:5683/config?param=interval 3600 </pre>
 
 
-the above will configure the server to post the data every one hour (60 * 60  = 3600 seconds)
+the above will configure the server to post the data every one hour (60 * 60  = 3600 seconds).
  
-The Sink address is : **bbbb::101** is a Linux PC (Ubuntu) connected to the Sensor Network via the 6LBR border router solution by CETIC.
+The Sink address is : <b>bbbb::101</b> is a Linux PC (Ubuntu) connected to the Sensor Network via the 6LBR border router solution by CETIC.
 
-for further information (https://github.com/cetic/6lbr/wiki)
+for further information (https://github.com/cetic/6lbr/wiki).
 
-The sink is hence connected to the linux pc using a ethernet cable to a Raspberry Pi which runs the 6LBR on it and a Zolertia Z1 mote works as a SLIP-Radio which sniffs packets from the sensor network and then passes them to the Raspberry Pi
+The sink is hence connected to the linux pc using a ethernet cable to a Raspberry Pi which runs the 6LBR on it and a Zolertia Z1 mote works as a SLIP-Radio which sniffs packets from the sensor network and then passes them to the Raspberry Pi.
 
-NOTE: Raspberry pi runs on the ROUTER mode and check if the SLIP radio is connected on the ttyUSB0 port **on the Raspberry Pi not on the Linux PC**
+NOTE: Raspberry pi runs on the ROUTER mode and check if the SLIP radio is connected on the ttyUSB0 port <b>on the Raspberry Pi not on the Linux PC</b>
 <pre>ls -l /dev/ttyUSB*</pre>
 
 the important lines to establish with the Raspberry Pi 6LBR are following
