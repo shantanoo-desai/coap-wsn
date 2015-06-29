@@ -54,9 +54,11 @@ The CoAP server keeps posting the following :
 <pre>{eui:aabbccddeeff, tmp=xxxx mC, count=yy, rssi =-abc dBm}</pre>
 according to the 'interval' query in CONFIG parameter. 
 
+
 By default the time interval is 10 seconds but that could be changed using the following line:
 
-~$ smcpctl coap://[Sensor IPv6 address]:5683/config?param=interval 3600 
+<pre>~$ smcpctl coap://[Sensor IPv6 address]:5683/config?param=interval 3600 </pre>
+
 
 the above will configure the server to post the data every one hour (60 * 60  = 3600 seconds)
  
