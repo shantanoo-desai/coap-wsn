@@ -3,6 +3,11 @@ CoAP Server
 
 Based on Project by Kiril Petrov (https://github.com/retfie)
 
+programmed using Erbium for CoAP used in Contiki-OS (https://www.contiki-os.org)
+
+for current repositories on Contiki OS official repository link (https://github.com/contiki-os/contiki)
+
+
 Available resources:
 
 <pre><b>CONFIG Parameters</b> : GET, POST</pre>
@@ -10,27 +15,42 @@ Configuring the IP sink address, Posting interval and Sink Path
 
 <pre><b>GET config?param=ip</b></pre>
 should return the sinks IP address
-<pre><b>PUT config?param=ip (new sink address)</b></pre>
+
+<pre><b>POST config?param=ip (new sink address)</b></pre>
 should update the mote to a new sink address
-<pre>GET config?param=interval</pre>
+
+<pre><b> GET config?param=interval </b></pre>
 should return a number with units of Seconds eg. 10 means 10 seconds
-<pre>PUT config?param=interval (number)</pre>
+
+<pre><b> POST config?param=interval (number) </b></pre>
 should change the posting interval
-<pre>GET config?param=path</pre>
+
+<pre><b> GET config?param=path </b></pre>
 should return <b> /SINK</b> as an idea of what the IP address is titled.
+
+<pre><b> POST config?param=path (name-of-path)</b></pre>
+should change the path name to the mentioned one.
+
+
 <pre><b>BATTERY</b> : GET</pre>
 Returns battery value in form of xxxx mV
+<h2>Routing Information using rplinfo</h2>
+
 <pre><b>RPL info</b> : GET</pre>
+
 Returns the Parent information when <pre>GET rplinfo/parents</pre>
 if the Node has parent/s will return eg. 1
 
 to access the parent information: use <pre>GET rplinfo/parents?index=0</pre>
 
-<b>TIP</b>: when the returned information is eg. 1 use GET on index=0 a index=1 will return <pre>{}</pre>
+<b>TIP</b>: when the returned information is eg. 1 use GET on index=0 as index=1 will return. 
+ <pre>{}</pre>
 
 For Multihop network
 <pre>GET rplinfo/route</pre>
 it should return values 1 or 2 according the Physical setup.
+Hence if there are two available parents in a multihop network, the <b>GET</b> will return '2' which means to obtain the information use the <b> GET </b> with index = 0 or 1
+
 Similar to Parents info method use <pre>GET rplinfo/route?index=0 or 1 </pre> to return the Destination Address
 
 if the Node is within the Border Router range it will return the Address of the BORDER ROUTER.
@@ -46,12 +66,13 @@ To Access CoAP Server Resources:
 
 Use of SMCP which has command line interface.
 
-(Note: there seems to be some Problem at present when using the Copper Plugin in Mozilla Firefox).
+(<b>Note</b>: there seems to be some Problem at present when using the Copper Plugin in Mozilla Firefox).
+
 
 for further info on SMCP : https://github.com/darconeous/smcp/
 
 The CoAP server keeps posting the following :
-<pre>{eui:aabbccddeeff, tmp=xxxx mC, count=yy, rssi =-abc dBm}</pre>
+<pre>{eui:aabbccddeeff, tmp=xxxx mC, count=yy}</pre>
 according to the 'interval' query in CONFIG parameter. 
 
 
@@ -119,8 +140,13 @@ coap://[aaaa::c30c:0:0:7b]:5683/>
 
 </pre>
 
-Using SMCP a simple coap-server is made on the linux pc which listens to the CoAP port of 5683 and responds to the incoming COAP_POST from the CoAP server on Zolertia Z1 and responds with an ACK to the node back and the con_ok in the node is set to 1 which assures the posting message was received by the SINK
-.
+Using SMCP a simple coap-server is made on the linux pc which listens to the CoAP port of 5683 and responds to the incoming COAP_POST from the CoAP server on Zolertia Z1 and responds with an ACK to the node back and the con_ok in the node is set to 1 which assures the posting message was received by the SINK.
+
+when the following command is executed in the folder smcp/src/examples
+(Will upload the file and complete folder soon! )
+<pre>
+	./coap-server
+</pre>
 
 the output is shown below:
 <pre>
@@ -145,3 +171,10 @@ the output is shown below:
 {"eui":"c10c00000000007b","temp":"25471 mC","count":18}
 
 </pre>
+
+Hence the Port number 5683 is now busy at listening to what the server is sending and giving a RESPONSE back. 
+The response needs to be sent back to the Sensor node because of a CON (Confirmable Type) POST. The server anticipates an Acknowlegdement which the Linux PC running the smcp coap-server provides.
+
+
+<h2>TO DO LIST</h2>
+1. need to use this data printed on the gnome terminal for a simple UI.
