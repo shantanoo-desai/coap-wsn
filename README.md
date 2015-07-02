@@ -177,4 +177,6 @@ The response needs to be sent back to the Sensor node because of a CON (Confirma
 
 
 <h2>TO DO LIST</h2>
-1. need to use this data printed on the gnome terminal for a simple UI.
+1. Possiblity: while printing data keep printing the same content to a .txt or .json file..
+
+2. need to use this data printed on the gnome terminal for a simple UI.
