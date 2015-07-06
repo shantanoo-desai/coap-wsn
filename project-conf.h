@@ -65,4 +65,8 @@
 #undef UIP_CONF_TCP
 #define UIP_CONF_TCP                   0
 
+/*low power tx mode*/
+#undef LPM_CONF_MAX_PM
+#define LPM_CONF_MAX_PM			1
+ 
 #endif

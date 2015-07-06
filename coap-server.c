@@ -6,13 +6,15 @@
 
 #include "net/rpl/rpl.h"
 #include "dev/radio.h"
+/*Low Tx power module*/
+#include "lpm.h"
 
 #if PLATFORM_HAS_BUTTON
 #include "dev/button-sensor.h"
 #endif
 
 #if WITH_TMP102_SENSOR
-#include "dev/se95-sensor.h"
+#include "dev/tmp102.h"
 #endif
 
 #if PLATFORM_HAS_BATTERY
@@ -42,7 +44,7 @@
 #define DEFAULT_SINK_PATH "/SINK"
 
 /*default time to wait between posts in Seconds*/
-#define DEFAULT_POST_INTERVAL 10
+#define DEFAULT_POST_INTERVAL 30
 
 #define REMOTE_PORT		UIP_HTONS(COAP_DEFAULT_PORT) /*CoAP default port number 5683*/
 
@@ -65,8 +67,7 @@ char buf[256]; // Buffer
 
 /*timer declaration*/
 static struct etimer et_read_sensors; 
-/*radio value capture*/
-static radio_value_t radio_value;
+
 /*new event declaration*/
 static process_event_t ev_new_interval;
 
@@ -466,16 +467,24 @@ PROCESS(read_sensors, "Read Sensors");
 PROCESS_THREAD(read_sensors,ev,data)
 {
 	uint8_t n = 0;
-#if WITH_TMP102_SENSOR
 	uint8_t m = 0;
 	char temp_buf[30]; // buffer for temperature values
-#endif
+
+	tmp102_init(); // initialize the Temperature Sensor
 
 	int16_t value;
 	linkaddr_t *addr;
 	PROCESS_BEGIN();
 
+	int16_t tempint;	/*using code from Z1/temperature sensor*/
+ 	uint16_t tempfrac;
+  	int16_t raw;
+  	uint16_t absraw;
+  	int16_t sign;
+  	char minus = ' ';
+
 	addr = &linkaddr_node_addr;
+
 	n += sprintf(&(buf[n]),"{\"eui\":\"%02x%02x%02x%02x%02x%02x%02x%02x\"",
 		     addr->u8[0],
 		     addr->u8[1],
@@ -485,25 +494,30 @@ PROCESS_THREAD(read_sensors,ev,data)
 		     addr->u8[5],
 		     addr->u8[6],
 		     addr->u8[7]);
-	n += sprintf(&(buf[n]), ",\"temp\":\"%d mC\"", 25000 + ((value >> 4)-1422) * 1000 / 42); // will give xxxx mC for temp
 	n += sprintf(&(buf[n]),",\"count\":%d", uptime_count);
+	sign = 1;
+	raw = tmp102_read_temp_raw();
+	absraw = raw;
+    	if(raw < 0) {		// Perform 2C's if sensor returned negative data
+      		absraw = (raw ^ 0xFFFF) + 1;
+      		sign = -1;
+    }
+    	tempint = (absraw >> 8) * sign;
+    	tempfrac = ((absraw >> 4) % 16) * 625;	// Info in 1/10000 of degree
+    	minus = ((tempint == 0) & (sign == -1)) ? '-' : ' ';
+    	
 
-#if WITH_TMP102_SENSOR
-	value = se95_sensor.value(0);
-	if(value & (1 << 12))
-		value = (~value + 1) * 0.03125 * 1000 * -1;
-	else
-		value *= 0.03125 * 1000;
+	m = sprintf(temp_buf, "\"tmp102\":\"%c%d.%04d C\"", minus, tempint, tempfrac);
+
+	strncat(&(buf[n]), temp_buf, m);
+	//PRINTF("Temp =%c%d.%04d\n", minus, tempint, tempfrac);  Check point if something goes wrong
+
 
 	m = sprintf(temp_buf, "\"tmp102\":\"%d mC\"", value);
 
 	strncat(&(buf[n]), temp_buf, m);
 
 	n += m;
-#endif
-
-	//if (NETSTACK_RADIO.get_value(RADIO_PARAM_RSSI, &radio_value) == RADIO_RESULT_OK)
-	//	n += sprintf(&(buf[n]), "\"rssi\":\"%d dBm\"", radio_value);
 
 	n += sprintf(&(buf[n]), "}");
 
@@ -534,7 +548,7 @@ PROCESS_THREAD(coap_server, ev, data)
 	rplinfo_activate_resources();
 
 #if WITH_TMP102_SENSOR
-	SENSORS_ACTIVATE(se95_sensor);
+	SENSORS_ACTIVATE(tmp102_sensor);
 	PRINTF("TMP102 Sensor");
 #endif
 
@@ -549,7 +563,7 @@ PROCESS_THREAD(coap_server, ev, data)
 	/*print configuration*/
 	sensor_config_print();
 
-	etimer_set(&et_read_sensors, 5 * CLOCK_SECOND);
+	etimer_set(&et_read_sensors, 30 * CLOCK_SECOND);
 
 	// initialize
 	dag = NULL;

@@ -9,6 +9,8 @@ CFLAGS += -DPROJECT_CONF_H=\"project-conf.h\"
 # Contiki IPv6 configuration
 WITH_UIP6=1
 UIP_CONF_IPV6=1
+#Low Power (Tx) module
+LPM_CONF_MAX_PM=1
 # IPv6 make config disappeared completely
 CFLAGS += -DUIP_CONF_IPV6=1
 # variable for Makefile.include

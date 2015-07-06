@@ -52,6 +52,11 @@ it should return values 1 or 2 according the Physical setup.
 Hence if there are two available parents in a multihop network, the <b>GET</b> will return '2' which means to obtain the information use the <b> GET </b> with index = 0 or 1
 
 Similar to Parents info method use <pre>GET rplinfo/route?index=0 or 1 </pre> to return the Destination Address
+<pre>
+coap://[aaaa::c30c:0:0:1c8]:5683/> get rplinfo/routes?index=0
+{"Dest":"aaaa::c30c:0:0:7b","Next":"fe80::c30c:0:0:7b"}
+
+</pre>
 
 if the Node is within the Border Router range it will return the Address of the BORDER ROUTER.
 
@@ -61,6 +66,7 @@ eg:
 <pre> GET radio?param=lqi </pre> should return some value of LQI
 <pre> GET radio?param=rssi</pre> should return some values of RSSI
 
+</b>NEW</b>: Adding the LPM (Low Transmit Power Module) for testing Multi-Hop networks.
 
 To Access CoAP Server Resources:
 
@@ -72,11 +78,11 @@ Use of SMCP which has command line interface.
 for further info on SMCP : https://github.com/darconeous/smcp/
 
 The CoAP server keeps posting the following :
-<pre>{eui:aabbccddeeff, tmp=xxxx mC, count=yy}</pre>
+<pre>{"eui":"aabbccddeeff", "count"=yy,"tmp102:jj.kkkk C"}</pre>
 according to the 'interval' query in CONFIG parameter. 
 
 
-By default the time interval is 10 seconds but that could be changed using the following line:
+By default the time interval is 30 seconds but that could be changed using the following line:
 
 <pre>~$ smcpctl coap://[Sensor IPv6 address]:5683/config?param=interval 3600 </pre>
 
@@ -94,7 +100,8 @@ NOTE: Raspberry pi runs on the ROUTER mode and check if the SLIP radio is connec
 
 the important lines to establish with the Raspberry Pi 6LBR are following
 
-<pre>sudo sysctl -w net.ipv6.conf.eth0.accept_ra=1
+<pre>
+	sudo sysctl -w net.ipv6.conf.eth0.accept_ra=1
 	sudo sysctl -w net.ipv6.conf.eth0.accept_ra_rt_info_max_plen=64
 
 	sudo ip -6 addr add bbbb::101/64 dev eth0
@@ -111,6 +118,28 @@ also use a Web Browser to access the Border Router's webpage.
 Capture check: 
 Use the most current Wireshark Version 1.12.3 (v1.12.3-0-gbb3e9a0 from master-1.12)
 and capture packets on eth0 and observe the CoAP packets.
+
+OUTPUT AT THE TERMINAL FOR SENSOR: (using make login)
+<pre>
+	Rime started with address 193.12.0.0.0.0.1.200
+	MAC c1:0c:00:00:00:00:01:c8 Ref ID: 4979
+	Contiki-2.6-2343-g06f7acf started. Node id is set to 456.
+	CSMA ContikiMAC, channel check rate 8 Hz, radio channel 26
+	Tentative link-local IPv6 address fe80:0000:0000:0000:c30c:0000:0000:01c8
+	Starting 'CoAP Server'
+	Button SensorSensor configuration: 
+	Magic number: 5448
+	Version:0001
+	SINK PATH:/SINK 
+	Post Interval: 30 
+	IP Address: [bbbb:0000:0000:0000:0000:0000:0000:0101]
+	---- post count = 0
+	buf:{"eui":"c10c0000000001c8","count":0"tmp102":" 0.0000 C"}
+	---- post count = 1
+	buf:{"eui":"c10c0000000001c8","count":1"tmp102":" 30.7500 C"}
+</pre>
+
+<b>Note:</b> the initial 0.0000 C is due to initialization of the sensor. can be considered Garbage.
 
 OUTPUT USING SMCPCTL in Ubuntu Terminal:
 <pre>
@@ -136,7 +165,8 @@ coap://[aaaa::c30c:0:0:7b]:5683/> get rplinfo/parents
 1
 coap://[aaaa::c30c:0:0:7b]:5683/> get rplinfo/parents?index=0
 {"eui":"c30c0000000010b7","pref":true,"etx":256}
-coap://[aaaa::c30c:0:0:7b]:5683/> 
+coap://[aaaa::c30c:0:0:1c8]:5683/> get rplinfo/routes?index=0
+{"Dest":"aaaa::c30c:0:0:7b","Next":"fe80::c30c:0:0:7b"}
 
 </pre>
 
@@ -151,24 +181,14 @@ when the following command is executed in the folder smcp/src/examples
 the output is shown below:
 <pre>
 	Listening on port 5683
-{"eui":"c10c00000000007b","temp":"25471 mC","count":1}
-{"eui":"c10c00000000007b","temp":"25471 mC","count":2}
-{"eui":"c10c00000000007b","temp":"25471 mC","count":3}
-{"eui":"c10c00000000007b","temp":"25471 mC","count":4}
-{"eui":"c10c00000000007b","temp":"25471 mC","count":5}
-{"eui":"c10c00000000007b","temp":"25471 mC","count":6}
-{"eui":"c10c00000000007b","temp":"25471 mC","count":7}
-{"eui":"c10c00000000007b","temp":"25471 mC","count":8}
-{"eui":"c10c00000000007b","temp":"25471 mC","count":9}
-{"eui":"c10c00000000007b","temp":"25471 mC","count":10}
-{"eui":"c10c00000000007b","temp":"25471 mC","count":11}
-{"eui":"c10c00000000007b","temp":"25471 mC","count":12}
-{"eui":"c10c00000000007b","temp":"25471 mC","count":13}
-{"eui":"c10c00000000007b","temp":"25471 mC","count":14}
-{"eui":"c10c00000000007b","temp":"25471 mC","count":15}
-{"eui":"c10c00000000007b","temp":"25471 mC","count":16}
-{"eui":"c10c00000000007b","temp":"25471 mC","count":17}
-{"eui":"c10c00000000007b","temp":"25471 mC","count":18}
+{"eui":"c10c00000000007b","count":0"tmp102":" 0.0000 C"}
+{"eui":"c10c0000000001c8","count":0"tmp102":" 0.0000 C"}
+{"eui":"c10c00000000007b","count":1"tmp102":" 29.4375 C"}
+{"eui":"c10c00000000007b","count":1"tmp102":" 29.4375 C"}
+{"eui":"c10c0000000001c8","count":1"tmp102":" 30.0625 C"}
+{"eui":"c10c00000000007b","count":1"tmp102":" 29.4375 C"}
+{"eui":"c10c00000000007b","count":1"tmp102":" 29.4375 C"}
+{"eui":"c10c0000000001c8","count":2"tmp102":" 30.1250 C"}
 
 </pre>
 
@@ -177,6 +197,16 @@ The response needs to be sent back to the Sensor node because of a CON (Confirma
 
 
 <h2>TO DO LIST</h2>
-1. Possiblity: while printing data keep printing the same content to a .txt or .json file..
+1. Making database of all sensor data.
 
 2. need to use this data printed on the gnome terminal for a simple UI.
+
+<h2>RECENT CHANGES</h2>
+1. added LPM (low transmit power) for checking multi-hop.
+2. changed the temperature acquiring by using TMP-102 (in-built) sensor
+3. added the serial output of sensor.
+4. added route example for multi-hop scheme.
+5. will save the incoming post in a data-collect.txt in folder smcp/src/examples.
+
+
+
