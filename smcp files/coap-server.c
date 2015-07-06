@@ -50,7 +50,7 @@ request_handler(void* context) {
       	}
 		
 		/* Only print a newline if the content doesn't already print one. */
-		//if((content[content_length - 1] != '\n'))
+		if((content[content_length - 1] != '\n'))
 			printf("\n");
 	}
 
