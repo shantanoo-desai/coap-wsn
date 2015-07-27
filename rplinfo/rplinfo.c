@@ -62,11 +62,11 @@ uint16_t
 create_route_msg(char *buf, uip_ds6_route_t *r)
 {
 	uint8_t n = 0;
-	n += sprintf(&(buf[n]), "{\"Dest\":\""); // sprintf for buffer prints
+	n += sprintf(&(buf[n]), "{\"dest\":\""); // sprintf for buffer prints
 	
 	n += ipaddr_add(&r->ipaddr, &(buf[n])); // push IP address in Buffer
 
-	n += sprintf(&(buf[n]), "\",\"Next\":\"");
+	n += sprintf(&(buf[n]), "\",\"next\":\"");
 
 	n += ipaddr_add(uip_ds6_route_nexthop(r), &(buf[n])); // Next hop address in Buffer
 
@@ -149,7 +149,7 @@ routes_handler(void *request, void *response, uint8_t *buffer, uint16_t preferre
 
 /*
 	ROUTE MESSAGE:
-		At this point output ----> {"Dest":"some IPv6 address","Next": "next hop address"}
+		At this point output ----> {"dest":"some IPv6 address","next": "next hop address"}
 */
 
 
