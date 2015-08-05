@@ -142,7 +142,7 @@ routes_handler(void *request, void *response, uint8_t *buffer, uint16_t preferre
 		strpos += snprintf((char *)buffer, preferred_size, "%d", count);
 	}
 
-	*offset = -1;
+	//*offset = -1;
 	REST.set_response_payload(response, (char *)buffer, strpos); // Setting the payload of response.
 
 }
@@ -279,7 +279,7 @@ parents_handler(void *request, void *response, uint8_t *buffer ,uint16_t preferr
 		REST.set_header_content_type(response, REST.type.APPLICATION_JSON);
 	}
 
-	*offset = -1;
+	//*offset = -1;
 	REST.set_response_payload(response, buffer, strpos);
 
 }
