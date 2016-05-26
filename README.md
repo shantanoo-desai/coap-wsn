@@ -1,38 +1,32 @@
-# coap-wsn
-CoAP Server
+#CoAP Server
 
-Based on Project by Kiril Petrov (https://github.com/retfie)
+Programmed using [Erbium](http://people.inf.ethz.ch/mkovatsc/erbium.php) for [CoAP](coap.technology) used in [Contiki-OS](https://www.contiki-os.org)
 
-programmed using Erbium for CoAP used in Contiki-OS (https://www.contiki-os.org)
+###Available resources:
 
-for current repositories on Contiki OS official repository link (https://github.com/contiki-os/contiki)
-
-
-Available resources:
-
-<pre><b>CONFIG Parameters</b> : GET, POST</pre>
+`__CONFIG Parameters__ : GET, POST`
 Configuring the IP sink address, Posting interval and Sink Path
 
-<pre><b>GET config?param=ip</b></pre>
+`GET config?param=ip`
 should return the sinks IP address
 
-<pre><b>POST config?param=ip (new sink address)</b></pre>
+`POST config?param=ip (new sink address)`
 should update the mote to a new sink address
 
-<pre><b> GET config?param=interval </b></pre>
+`GET config?param=interval`
 should return a number with units of Seconds eg. 10 means 10 seconds
 
-<pre><b> POST config?param=interval (number) </b></pre>
+`POST config?param=interval (number)`
 should change the posting interval
 
-<pre><b> GET config?param=path </b></pre>
-should return <b> /SINK</b> as an idea of what the IP address is titled.
+`GET config?param=path`
+should return __/SINK__ as an idea of what the IP address is titled.
 
-<pre><b> POST config?param=path (name-of-path)</b></pre>
+`POST config?param=path (name-of-path)`
 should change the path name to the mentioned one.
 
 
-<pre><b>BATTERY</b> : GET</pre>
+`__BATTERY__: GET__`
 Returns battery value in form of xxxx mV
 <h2>Routing Information using rplinfo</h2>
 
